@@ -1,0 +1,1 @@
+@extends('layouts.app') @section('content') @include('parties.list',['title'=>__('pos.customers'),'route'=>'customers.store','types'=>['Individual','Scrap Collector','Regular Customer','Business']]) @endsection

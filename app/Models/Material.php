@@ -1,0 +1,1 @@
+<?php namespace App\Models; class Material extends BaseModel { protected $casts=['purchase_price'=>'decimal:4','selling_price'=>'decimal:4','current_stock'=>'decimal:3','average_cost'=>'decimal:4']; public function category(){return $this->belongsTo(MaterialCategory::class,'category_id');} public function unit(){return $this->belongsTo(Unit::class);} }

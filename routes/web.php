@@ -1,0 +1,15 @@
+<?php
+use App\Http\Controllers\{AuthController,DashboardController,MaterialController,OperationsController,PartyController,PosController};
+use Illuminate\Support\Facades\Route;
+Route::middleware('guest')->group(function(){Route::get('/login',[AuthController::class,'show'])->name('login');Route::post('/login',[AuthController::class,'login'])->name('login.attempt');});
+Route::post('/language/{locale}', function (string $locale) { abort_unless(in_array($locale, ['en', 'km'], true), 404); session(['locale' => $locale]); return back(); })->name('language.switch');
+Route::middleware('auth')->group(function(){
+ Route::get('/',[DashboardController::class,'index'])->name('dashboard');Route::post('/logout',[AuthController::class,'logout'])->name('logout');
+ Route::get('/pos/buy',[PosController::class,'buy'])->name('pos.buy');Route::post('/pos/buy',[PosController::class,'purchase'])->name('pos.purchase');Route::get('/pos/sell',[PosController::class,'sell'])->name('pos.sell');Route::post('/pos/sell',[PosController::class,'sale'])->name('pos.sale');
+ Route::resource('materials',MaterialController::class)->only(['index','store','update','destroy']);
+ Route::get('/customers',[PartyController::class,'customers'])->name('customers.index');Route::post('/customers',[PartyController::class,'storeCustomer'])->name('customers.store');Route::get('/suppliers',[PartyController::class,'suppliers'])->name('suppliers.index');Route::post('/suppliers',[PartyController::class,'storeSupplier'])->name('suppliers.store');
+ Route::get('/inventory',[OperationsController::class,'inventory'])->name('inventory.index');Route::post('/inventory/adjust',[OperationsController::class,'adjust'])->name('inventory.adjust');Route::get('/stock-movements',[OperationsController::class,'movements'])->name('inventory.movements');
+ Route::get('/purchases',[OperationsController::class,'purchases'])->name('purchases.index');Route::get('/purchases/{purchase}',[OperationsController::class,'purchaseShow'])->name('purchases.show');Route::get('/sales',[OperationsController::class,'sales'])->name('sales.index');Route::get('/sales/{sale}',[OperationsController::class,'saleShow'])->name('sales.show');
+ Route::get('/expenses',[OperationsController::class,'expenses'])->name('expenses.index');Route::post('/expenses',[OperationsController::class,'expenseStore'])->name('expenses.store');
+ Route::get('/reports',[OperationsController::class,'reports'])->name('reports.index');Route::get('/reports/purchases',[OperationsController::class,'purchaseReport'])->name('reports.purchases');Route::get('/reports/sales',[OperationsController::class,'salesReport'])->name('reports.sales');Route::get('/reports/profit',[OperationsController::class,'profitReport'])->name('reports.profit');Route::get('/reports/expenses',[OperationsController::class,'expenseReport'])->name('reports.expenses');Route::get('/reports/inventory-value',[OperationsController::class,'inventoryValueReport'])->name('reports.inventory-value');Route::get('/reports/movements',[OperationsController::class,'movementReport'])->name('reports.movements');
+});
